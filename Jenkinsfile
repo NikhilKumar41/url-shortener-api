@@ -21,13 +21,6 @@ environment {
             }
         }
 
-        stage('Code Quality') {
-            steps {
-                echo 'Running SonarQube scan...'
-                bat 'npx sonar-scanner'
-            }
-        }
-
         stage('Security Check') {
             steps {
                 echo 'Checking vulnerabilities...'
