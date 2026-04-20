@@ -1,10 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        // MongoDB connection for Docker container
-        MONGO_URI = "mongodb://host.docker.internal:27017/urlShortener"
-    }
+environment {
+    MONGO_URI = "mongodb://localhost:27017/urlShortener"
+}
 
     stages {
 
