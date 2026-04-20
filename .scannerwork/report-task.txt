@@ -1,0 +1,6 @@
+projectKey=url-shortener-api
+serverUrl=http://localhost:9000
+serverVersion=26.4.0.121862
+dashboardUrl=http://localhost:9000/dashboard?id=url-shortener-api
+ceTaskId=541df2c9-7cc7-4313-8976-ebc339024e61
+ceTaskUrl=http://localhost:9000/api/ce/task?id=541df2c9-7cc7-4313-8976-ebc339024e61
