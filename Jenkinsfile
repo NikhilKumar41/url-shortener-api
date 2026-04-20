@@ -8,19 +8,6 @@ pipeline {
 
     stages {
 
-        // =========================
-        // CHECKOUT CODE
-        // =========================
-        stage('Checkout') {
-            steps {
-                echo 'Cloning repository...'
-                checkout scm
-            }
-        }
-
-        // =========================
-        // BUILD (INSTALL DEPENDENCIES)
-        // =========================
         stage('Build') {
             steps {
                 echo 'Installing dependencies...'
@@ -28,9 +15,6 @@ pipeline {
             }
         }
 
-        // =========================
-        // TEST
-        // =========================
         stage('Test') {
             steps {
                 echo 'Running tests...'
@@ -38,9 +22,20 @@ pipeline {
             }
         }
 
-        // =========================
-        // DOCKER BUILD
-        // =========================
+        stage('Code Quality') {
+            steps {
+                echo 'Running SonarQube scan...'
+                bat 'npx sonar-scanner'
+            }
+        }
+
+        stage('Security Check') {
+            steps {
+                echo 'Checking vulnerabilities...'
+                bat 'npm audit'
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
@@ -48,15 +43,12 @@ pipeline {
             }
         }
 
-        // =========================
-        // DEPLOY
-        // =========================
         stage('Deploy') {
             steps {
                 echo 'Deploying container...'
                 bat '''
-                docker stop url-container 2>nul
-                docker rm url-container 2>nul
+                docker stop url-container || exit 0
+                docker rm url-container || exit 0
                 docker run -d -p 3000:3000 ^
                 -e MONGO_URI=%MONGO_URI% ^
                 --name url-container ^
@@ -65,29 +57,11 @@ pipeline {
             }
         }
 
-        // =========================
-        // MONITORING
-        // =========================
         stage('Monitoring Check') {
             steps {
                 echo 'Checking health endpoint...'
-                bat '''
-                timeout /t 5
-                curl http://localhost:3000/health
-                '''
+                bat 'curl http://localhost:3000/health'
             }
-        }
-    }
-
-    // =========================
-    // POST ACTIONS
-    // =========================
-    post {
-        success {
-            echo 'Pipeline completed successfully '
-        }
-        failure {
-            echo 'Pipeline failed '
         }
     }
 }
