@@ -69,14 +69,15 @@ pipeline {
         // MONITORING
         // =========================
         stage('Monitoring Check') {
-            steps {
-                echo 'Checking health endpoint...'
-                bat '''
-                timeout /t 5
-                curl http://localhost:3000/health
-                '''
-            }
+        steps 
+        {
+            echo 'Checking health endpoint...'
+            bat '''
+            ping 127.0.0.1 -n 6 > nul
+            curl http://localhost:3000/health
+            '''
         }
+}
     }
 
     // =========================
