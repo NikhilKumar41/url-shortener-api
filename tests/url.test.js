@@ -1,4 +1,5 @@
 // Import required modules
+process.env.NODE_ENV = "test";
 const request = require('supertest'); // used to test APIs
 const app = require('../src/app');    // import our app
 

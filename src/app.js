@@ -11,13 +11,19 @@ const app = express();
 
 app.use(express.json());
 
-// Connect to MongoDB using .env variable
-// Only connect if MONGO_URI exists AND not testing
-if (process.env.MONGO_URI && process.env.NODE_ENV !== "test") {
+// ===============================
+// MONGODB CONNECTION (SAFE)
+// ===============================
+if (process.env.NODE_ENV !== "test") {
+    require('dotenv').config();
+
+    const mongoose = require('mongoose');
+
     mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err));
 }
+
 // Routes
 app.use('/', urlRoutes);
 
