@@ -1,4 +1,7 @@
-require('dotenv').config(); // <-- this fixes your issue
+// Only load .env if not testing
+if (process.env.NODE_ENV !== "test") {
+    require('dotenv').config();
+} // <-- this fixes your issue
 
 const express = require('express');
 const mongoose = require('mongoose');
