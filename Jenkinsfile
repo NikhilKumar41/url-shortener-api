@@ -35,19 +35,19 @@ environment {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                echo 'Deploying container...'
-                bat '''
-                docker stop url-container || exit 0
-                docker rm url-container || exit 0
-                docker run -d -p 3000:3000 ^
-                -e MONGO_URI=%MONGO_URI% ^
-                --name url-container ^
-                url-shortener
-                '''
-            }
-        }
+stage('Deploy') {
+    steps {
+        echo 'Deploying container...'
+        bat '''
+        docker stop url-container 2>nul
+        docker rm url-container 2>nul
+        docker run -d -p 3000:3000 ^
+        -e MONGO_URI=%MONGO_URI% ^
+        --name url-container ^
+        url-shortener
+        '''
+    }
+}
 
         stage('Monitoring Check') {
             steps {
