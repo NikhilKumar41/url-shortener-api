@@ -34,7 +34,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                bat 'npm test'
+                bat 'set NODE_ENV=test && set MONGO_URI= && npm test'
             }
         }
 
