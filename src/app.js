@@ -9,10 +9,11 @@ const app = express();
 app.use(express.json());
 
 // Connect to MongoDB using .env variable
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
-
+if (process.env.NODE_ENV !== "test") {
+    mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+}
 // Routes
 app.use('/', urlRoutes);
 
