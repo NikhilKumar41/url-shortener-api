@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-// Import controller functions
 const {
     createShortUrl,
     redirectUrl,
     getAnalytics
 } = require('../controllers/urlController');
 
-// Route to create short URL
+
+// ===============================
+// ROUTES
+// ===============================
+
+// Create short URL
 router.post('/shorten', createShortUrl);
 
-// Route to redirect
-router.get('/:shortCode', redirectUrl);
-
-// Route to get analytics
+// Analytics
 router.get('/analytics/:shortCode', getAnalytics);
+
+// Redirect (IMPORTANT: keep this LAST)
+router.get('/:shortCode', redirectUrl);
 
 module.exports = router;

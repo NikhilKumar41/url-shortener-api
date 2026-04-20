@@ -1,20 +1,20 @@
-# Step 1: Use official Node.js image (this gives me a ready environment)
+# Use Node image
 FROM node:18
 
-# Step 2: Set working directory inside container
+# Create app folder
 WORKDIR /app
 
-# Step 3: Copy package.json first (faster builds)
+# Copy package files
 COPY package*.json ./
 
-# Step 4: Install dependencies inside container
+# Install dependencies
 RUN npm install
 
-# Step 5: Copy entire project into container
+# Copy all code
 COPY . .
 
-# Step 6: Tell Docker which port app uses
+# Expose port
 EXPOSE 3000
 
-# Step 7: Command to start the app
+# Start app
 CMD ["npm", "start"]
