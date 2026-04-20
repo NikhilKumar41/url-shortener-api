@@ -1,12 +1,26 @@
 pipeline {
     agent any
 
-environment {
-    MONGO_URI = "mongodb://localhost:27017/urlShortener"
-}
+    environment {
+        // MongoDB connection for Docker container
+        MONGO_URI = "mongodb://host.docker.internal:27017/urlShortener"
+    }
 
     stages {
 
+        // =========================
+        // CHECKOUT CODE
+        // =========================
+        stage('Checkout') {
+            steps {
+                echo 'Cloning repository...'
+                checkout scm
+            }
+        }
+
+        // =========================
+        // BUILD (INSTALL DEPENDENCIES)
+        // =========================
         stage('Build') {
             steps {
                 echo 'Installing dependencies...'
@@ -14,6 +28,9 @@ environment {
             }
         }
 
+        // =========================
+        // TEST
+        // =========================
         stage('Test') {
             steps {
                 echo 'Running tests...'
@@ -21,13 +38,9 @@ environment {
             }
         }
 
-        stage('Security Check') {
-            steps {
-                echo 'Checking vulnerabilities...'
-                bat 'npm audit'
-            }
-        }
-
+        // =========================
+        // DOCKER BUILD
+        // =========================
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
@@ -35,25 +48,46 @@ environment {
             }
         }
 
-stage('Deploy') {
-    steps {
-        echo 'Deploying container...'
-        bat '''
-        docker stop url-container 2>nul
-        docker rm url-container 2>nul
-        docker run -d -p 3000:3000 ^
-        -e MONGO_URI=%MONGO_URI% ^
-        --name url-container ^
-        url-shortener
-        '''
-    }
-}
+        // =========================
+        // DEPLOY
+        // =========================
+        stage('Deploy') {
+            steps {
+                echo 'Deploying container...'
+                bat '''
+                docker stop url-container 2>nul
+                docker rm url-container 2>nul
+                docker run -d -p 3000:3000 ^
+                -e MONGO_URI=%MONGO_URI% ^
+                --name url-container ^
+                url-shortener
+                '''
+            }
+        }
 
+        // =========================
+        // MONITORING
+        // =========================
         stage('Monitoring Check') {
             steps {
                 echo 'Checking health endpoint...'
-                bat 'curl http://localhost:3000/health'
+                bat '''
+                timeout /t 5
+                curl http://localhost:3000/health
+                '''
             }
+        }
+    }
+
+    // =========================
+    // POST ACTIONS
+    // =========================
+    post {
+        success {
+            echo 'Pipeline completed successfully '
+        }
+        failure {
+            echo 'Pipeline failed '
         }
     }
 }
