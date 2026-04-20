@@ -14,6 +14,10 @@ const urlRoutes = require('./src/routes/urlRoutes');
 // Middleware to read JSON
 app.use(express.json());
 
+// Home route (just for browser)
+app.get('/', (req, res) => {
+    res.send('Server is running 🚀');
+});
 
 // ===============================
 // ✅ HEALTH ROUTE (VERY IMPORTANT)
